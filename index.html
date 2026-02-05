@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONST UNION CORE（コンストユニオンコア）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        function handleLogoError(imgElement, type) {
+            imgElement.style.display = 'none';
+            if (type === 'nav') {
+                const fallback = document.getElementById('nav-logo-fallback');
+                if (fallback) fallback.classList.add('active');
+            } else if (type === 'hero') {
+                const fallback = document.getElementById('hero-logo-fallback');
+                if (fallback) fallback.classList.add('active');
+            } else if (type === 'footer') {
+                imgElement.insertAdjacentHTML('afterend', '<div class="text-white font-black text-xl mb-4">CONST UNION CORE</div>');
+            }
+        }
+
+        // モーダル表示用スクリプト
+        function toggleModal(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                el.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                        url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: #d4af37;
+            margin: 16px auto;
+        }
+        @media (min-width: 768px) {
+            .section-title::after {
+                margin: 16px 0;
+            }
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .logo-text-fallback.active {
+            display: flex;
+        }
+        .hero-logo-fallback.active {
+            display: block;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+        }
+        .member-card:hover {
+            border-color: #d4af37;
+            background-color: #fffbeb;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900 overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="fixed w-full z-[100] bg-white/95 backdrop-blur-md transition-shadow duration-300 border-b border-slate-100">
+        <div class="flex justify-between items-center px-5 py-3 md:px-12">
+            <a href="#" class="flex items-center">
+                <img src="const_union_logo_512.webp" alt="CONST UNION CORE" class="brand-logo" onerror="handleLogoError(this, 'nav')">
+                <div id="nav-logo-fallback" class="hidden font-black text-lg text-slate-900"><span class="text-amber-600 mr-2">■</span>CONST UNION CORE</div>
+            </a>
+            
+            <button id="menu-toggle" class="md:hidden p-2 text-slate-800 focus:outline-none">
+                <svg id="icon-open" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg id="icon-close" class="w-8 h-8 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <nav class="hidden md:flex items-center space-x-8 text-[14px] font-bold">
+                <a href="#concept" class="hover:text-amber-600 transition-colors">コンセプト</a>
+                <a href="#services" class="hover:text-amber-600 transition-colors">事業内容</a>
+                <a href="#strengths" class="hover:text-amber-600 transition-colors">選ばれる理由</a>
+                <a href="#organization" class="hover:text-amber-600 transition-colors">組織構成</a>
+                <a href="#contact" class="bg-amber-600 text-white px-5 py-2 rounded-full hover:bg-amber-700 transition-all shadow-md">お問い合わせ</a>
+            </nav>
+        </div>
+        <nav id="mobile-nav" class="hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 flex flex-col p-8 space-y-6 md:hidden shadow-2xl font-bold">
+            <a href="#concept" class="text-lg py-2">コンセプト</a>
+            <a href="#services" class="text-lg py-2">事業内容</a>
+            <a href="#strengths" class="text-lg py-2">選ばれる理由</a>
+            <a href="#organization" class="text-lg py-2">組織構成</a>
+            <a href="#contact" class="text-lg py-4 text-center bg-amber-600 text-white rounded-xl">お問い合わせ</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="text-center max-w-5xl flex flex-col items-center">
+            <div class="mb-8 fade-in flex flex-col items-center">
+                <img src="const_union_logo_512.webp" alt="CONST UNION CORE" class="h-32 md:h-40 w-auto mb-4" onerror="handleLogoError(this, 'hero')">
+                <div id="hero-logo-fallback" class="hidden text-4xl font-black text-amber-400 mb-2">CONST UNION CORE</div>
+                <p class="text-amber-400 text-xs md:text-sm font-bold tracking-[0.4em] uppercase">Construction Professional Alliance</p>
+            </div>
+            <h2 class="text-3xl md:text-6xl font-black text-white mb-8 leading-tight fade-in">
+                建設の土台で結束し、<br>
+                <span class="text-amber-400">業界の核心</span>となる。
+            </h2>
+            <p class="text-slate-200 text-base md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed fade-in">
+                測量・設計・施工管理・DX支援・PRまで。<br class="hidden md:block">
+                個の強みを結束（UNION）させ、建設プロジェクトをトータルで支える「新しい価値」を創出します。
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center fade-in">
+                <a href="#services" class="w-full md:w-auto bg-amber-600 text-white px-10 py-4 rounded-full font-bold shadow-xl hover:bg-amber-700 transition-all transform hover:-translate-y-1">
+                    事業内容を見る
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept Section -->
+    <section id="concept" class="py-24 px-6 bg-white overflow-hidden">
+        <div class="max-w-4xl mx-auto">
+            <div class="fade-in">
+                <h3 class="text-2xl md:text-4xl font-black mb-10 flex items-center">
+                    <span class="w-8 h-1.5 bg-amber-600 mr-4"></span>UNIONとしての使命
+                </h3>
+                <div class="space-y-8 text-slate-700 leading-loose text-lg">
+                    <p>CONST UNION COREは、これまで各現場で個別に活動してきた精鋭4社が、互いの専門領域を補完し合うために結集した組織です。</p>
+                    <p class="font-bold text-slate-900 border-l-4 border-amber-600 pl-6 bg-amber-50 py-6 rounded-r-lg">
+                        単なる「企業の集まり」ではなく、技術・人財・機材を最適に配置する「一つの共同体」として、一社では対応が難しかった大規模プロジェクトや高度なDX化、短納期案件にワンストップで対応します。
+                    </p>
+                    <p>私たちは「外注先」としてだけでなく、建設業界の未来を自走させる「パートナー」として、企業のDX内製化や教育支援まで含めたトータルソリューションを提供します。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 px-6 bg-slate-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 fade-in">
+                <h3 class="section-title text-2xl md:text-4xl font-black">事業ドメイン</h3>
+                <p class="text-slate-500 mt-4 italic">~ 現場のデジタル化から、組織の自走まで支える ~</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in">
+                    <div class="text-amber-600 mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.553-1.96l7-2a2 2 0 011.894 0l7 2A2 2 0 0121 6.618v8.764a2 2 0 01-1.553 1.96L14 20l-5 2z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">① ICT計測・3次元測量</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">ドローン(UAV)写真測量、レーザー計測、モバイルスキャンなど、あらゆる視点から現場をデジタル化。現況地形を精密な点群データへ変換します。</p>
+                    <ul class="text-xs text-slate-500 space-y-2">
+                        <li>• UAVレーザー地形測量</li>
+                        <li>• モバイルスキャン(歩行計測)</li>
+                        <li>• 災害時緊急測量</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in">
+                    <div class="text-amber-600 mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">② 3次元データ構築・設計</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">BIM/CIMモデル作成やICT建機用データ作成、VR/AR活用。可視化することで「現場の事前検証」と「合意形成」を劇的に高速化します。</p>
+                    <ul class="text-xs text-slate-500 space-y-2">
+                        <li>• 施工用3次元モデル作成</li>
+                        <li>• 構造物BIM/CIMモデリング</li>
+                        <li>• 干渉チェック・VRシミュレーション</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in">
+                    <div class="text-amber-600 mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">③ DX導入コンサル・育成</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">「外注」だけでなく「内製化」を支援。ICT施工やBIM/CIMを自社で運用できるようになるための技術指導、研修を実施します。</p>
+                    <ul class="text-xs text-slate-500 space-y-2">
+                        <li>• ICT内製化支援・実地指導</li>
+                        <li>• DX戦略立案・システム選定</li>
+                        <li>• 技術セミナー・研修運営</li>
+                    </ul>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in">
+                    <div class="text-amber-600 mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">④ 現場支援・BPO</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">現場監督の負担をチームの力で解消。出来形管理や書類作成などの煩雑なバックオフィス業務をプロフェッショナルが代行します。</p>
+                    <ul class="text-xs text-slate-500 space-y-2">
+                        <li>• 出来形ヒートマップ・書類代行</li>
+                        <li>• AI活用による業務効率化支援</li>
+                        <li>• 測量機材・ドローンレンタル</li>
+                    </ul>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card bg-white p-8 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in">
+                    <div class="text-amber-600 mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">⑤ 建設クリエイティブ・PR</h4>
+                    <p class="text-sm text-slate-600 mb-6 leading-relaxed">建設業の魅力を発信し、人材確保を支援。空撮動画、VR体験コンテンツ、Webサイト制作までトータルでプロデュースします。</p>
+                    <ul class="text-xs text-slate-500 space-y-2">
+                        <li>• 現場PR動画・空撮プロデュース</li>
+                        <li>• 建設業特化型Web・広報支援</li>
+                        <li>• VR体験コンテンツ制作</li>
+                    </ul>
+                </div>
+
+                <!-- Future Domain -->
+                <div class="service-card bg-amber-600 p-8 rounded-3xl shadow-xl border border-amber-500 transition-all fade-in flex flex-col justify-center">
+                    <h4 class="text-xl font-bold mb-4 text-white">ALL IN ONE</h4>
+                    <p class="text-sm text-amber-50 mb-4 leading-relaxed">連合の力を集結し、測量からアフターフォローまで一貫したマネジメントを提供します。</p>
+                    <a href="#contact" class="bg-white text-amber-600 text-center py-2 rounded-full text-xs font-bold hover:bg-slate-100 transition-colors">相談してみる</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strengths Section -->
+    <section id="strengths" class="py-24 px-6 bg-white">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 fade-in">
+                <h3 class="section-title text-2xl md:text-4xl font-black">UNIONならではの強み</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="flex gap-6 fade-in">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600 text-xl">01</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-3">多種多様な最新機材と専門知見</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">4社が保有する多種多様なドローン、レーザースキャナー、ICT建機用機材を相互利用。現場ごとに最適な機器選定を可能にします。</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 fade-in">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600 text-xl">02</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-3">リソース最適化による「断らない体制」</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">各社の稼働状況をリアルタイムで共有。繁忙期でも連合全体のリソースを調整し、急ぎの案件や大規模プロジェクトを完遂します。</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 fade-in">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600 text-xl">03</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-3">施工から広報までカバーする広域対応</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">単なる「作業」で終わらせず、その成果を企業の資産（実績データ・PR素材）に変える付加価値を提供できるのが私たちのユニークさです。</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 fade-in">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center font-black text-amber-600 text-xl">04</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-3">ワンストップ窓口による管理コスト削減</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">測量はA社、設計はB社…といった分断を解消。COREが窓口となることで、発注者様のコミュニケーションコストを最小化します。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Organization Section -->
+    <section id="organization" class="py-20 px-6 bg-slate-50">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16 fade-in">
+                <h3 class="section-title text-2xl md:text-4xl font-black">連合組織（UNION）の構成</h3>
+                <p class="text-slate-500 mt-4 text-sm">各社が代表・理事として責任を持ってプロジェクトを統括します</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ <!-- 前田 幸博 (アール) -->
+                <button onclick="toggleModal('modal-art')" class="member-card text-left bg-white p-6 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in group">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Chairman / Creative AI</span>
+                    <h4 class="text-xl font-black text-slate-900 mt-1">前田 幸博</h4>
+                    <p class="text-xs text-amber-600 font-bold mt-1">株式会社アール</p>
+                    <div class="mt-4 text-[10px] text-slate-400 group-hover:text-amber-600 flex items-center">
+                        会社案内を見る <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </button>
+
+
+  <!-- 沖山 達哉 (CRAFTCOM) -->
+                <button onclick="toggleModal('modal-craftcom')" class="member-card text-left bg-amber-100/30 p-6 rounded-3xl shadow-sm border border-amber-100 transition-all fade-in group">
+                    <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Vice Chairman / DX Consultant</span>
+                    <h4 class="text-xl font-black text-slate-900 mt-1">沖山 達哉</h4>
+                    <p class="text-xs text-slate-500 mt-2">ＣＲＡＦＴＣＯＭ株式会社 代表取締役</p>
+                    <div class="mt-4 text-[10px] text-slate-400 group-hover:text-amber-600 flex items-center">
+                        会社案内を見る <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </button>
+
+                <!-- 山中 浩 (シビル・ヒロ) -->
+                <button onclick="toggleModal('modal-civil-hiro')" class="member-card text-left bg-white p-6 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in group">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Auditor / Field Specialist</span>
+                    <h4 class="text-xl font-black text-slate-900 mt-1">山中 浩</h4>
+                    <p class="text-xs text-amber-600 font-bold mt-1">株式会社シビル・ヒロ</p>
+                    <div class="mt-4 text-[10px] text-slate-400 group-hover:text-amber-600 flex items-center">
+                        会社案内を見る <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </button>
+
+               
+                
+                <!-- 小谷 泰樹 (C&Nネクスト) -->
+                <button onclick="toggleModal('modal-cnx')" class="member-card text-left bg-white p-6 rounded-3xl shadow-sm border border-slate-100 transition-all fade-in group">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Organizer / Contact</span>
+                    <h4 class="text-xl font-black text-slate-900 mt-1">小谷 泰樹</h4>
+                    <p class="text-xs text-amber-600 font-bold mt-1">株式会社C&Nネクスト</p>
+                    <div class="mt-4 text-[10px] text-slate-400 group-hover:text-amber-600 flex items-center">
+                        会社案内を見る <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </button>
+
+              
+                
+                <div class="bg-amber-100/30 p-6 rounded-3xl shadow-sm border border-amber-100 fade-in">
+                    <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Organizer</span>
+                    <h4 class="text-xl font-black text-slate-900 mt-1">松井 賢治</h4>
+                    <p class="text-xs text-slate-500 mt-2">株式会社C&Nネクスト 取締役会長</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-6 bg-slate-900 text-white text-center">
+        <div class="max-w-3xl mx-auto fade-in">
+            <h3 class="text-3xl md:text-5xl font-black mb-8 italic">READY TO BUILD?</h3>
+            <p class="text-slate-400 mb-12 text-lg">建設現場のあらゆる課題に、UNIONの技術力で応えます。</p>
+            <a href="mailto:kodani@c-and-n.co.jp" class="inline-block bg-amber-600 text-white px-12 py-5 rounded-full font-bold text-xl hover:bg-amber-700 transition-all shadow-2xl">
+                お問い合わせはこちら
+            </a>
+            <p class="mt-8 text-slate-500 text-sm">株式会社C&Nネクスト（事務局窓口）</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-12 px-6 border-t border-slate-900">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col items-center md:items-start">
+                <img src="const_union_logo_512.webp" alt="CONST UNION CORE" class="h-10 w-auto mb-4" onerror="handleLogoError(this, 'footer')">
+                <p class="text-slate-500 text-xs">© 2024 CONST UNION CORE All Rights Reserved.</p>
+            </div>
+            <div class="flex gap-8 text-xs font-bold text-slate-400">
+                <a href="#" class="hover:text-white transition-colors">TOP</a>
+                <a href="#concept" class="hover:text-white transition-colors">CONCEPT</a>
+                <a href="#services" class="hover:text-white transition-colors">SERVICES</a>
+                <a href="#organization" class="hover:text-white transition-colors">UNION</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals (Expanded) -->
+
+    <!-- Modal: 株式会社アール -->
+    <div id="modal-art" class="fixed inset-0 z-[200] hidden bg-slate-900/90 backdrop-blur-sm overflow-y-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <button onclick="toggleModal('modal-art')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 z-10">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="bg-slate-50 p-8 md:p-12 border-b border-slate-100">
+                <p class="text-amber-600 font-bold text-sm tracking-widest mb-2 uppercase">Company Profile</p>
+                <h2 class="text-3xl md:text-4xl font-black mb-4">株式会社アール</h2>
+                <p class="text-slate-600 text-lg leading-relaxed font-bold italic">「壁役・話し相手として、AIとクリエイティブで負担を軽減」</p>
+            </div>
+            <div class="p-8 md:p-12 space-y-16">
+                <section>
+                    <h3 class="text-xl font-black border-l-4 border-amber-600 pl-4 mb-6">事業概要</h3>
+                    <p class="text-slate-700 leading-loose">
+                        「必要な時に、必要なだけ、壁打ち相手になります。」をモットーに、
+望まれる範囲で、望まれるタイミングで、段取りを助け、実務を肩代わりします。
+孤独になりがちな現場責任者のパートナーとして、共同作業で課題を解決します。
+
+
+                    </p>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field A</span>
+                        <h3 class="text-xl font-black">AI活用による施工管理・意思決定をサポート</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                        <p class="text-slate-700 text-sm font-bold mb-2">
+  現場責任者が担う「判断」を、間違えず即断即決できるように、AI活用環境構築をサポートします。
+
+                    </p>
+             
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field B</span>
+                        <h3 class="text-xl font-black">現場のプロモーション・クリエイティブ</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+ <p class="text-slate-700 text-sm font-bold mb-2">
+                        「現場の価値をシネマティックに可視化する」ショートビデオの制作。
+デジタルサイネージデータの作成、遠隔運用支援。
+
+                    </p>
+                  
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field C</span>
+                        <h3 class="text-xl font-black">電子成果作成・日常業務支援他</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                        <p class="text-slate-700 text-sm font-bold mb-2">
+  ドローンや撮影機材のレンタル。UAV計測データから点群等作成。
+工事・業務の電子成果作成を補佐。
+現場のラストスパートを強力にバックアップします。
+
+                    </p>
+                   
+                    </div>
+                </section>
+                <section class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Basic Information</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">代表者</span><span class="font-bold text-slate-800 text-right">代表取締役 前田 幸博</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">所在地</span><span class="font-bold text-slate-800 text-right">広島県広島市安佐南区東野1-21-22</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Access & Links</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">電話番号</span><span class="font-bold text-slate-800">082-874-9190</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">Webサイト</span><span class="font-bold text-slate-400 italic">準備中</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="p-8 text-center bg-slate-900">
+                <button onclick="toggleModal('modal-art')" class="px-12 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+  <!-- Modal: 株式会社シビル・ヒロ -->
+<div id="modal-civil-hiro" class="fixed inset-0 z-[200] hidden bg-slate-900/90 backdrop-blur-sm overflow-y-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+    <button onclick="toggleModal('modal-civil-hiro')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 z-10" aria-label="閉じる">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <div class="bg-slate-50 p-8 md:p-12 border-b border-slate-100">
+      <p class="text-amber-600 font-bold text-sm tracking-widest mb-2 uppercase">Company Profile</p>
+      <h2 class="text-3xl md:text-4xl font-black mb-4">株式会社シビル・ヒロ</h2>
+      <p class="text-slate-600 text-lg leading-relaxed font-bold italic">「土木工事をICT技術で、未来に向けた技術支援」</p>
+    </div>
+
+    <div class="p-8 md:p-12 space-y-16">
+      <section>
+        <h3 class="text-xl font-black border-l-4 border-amber-600 pl-4 mb-6">事業概要</h3>
+        <p class="text-slate-700 leading-loose">
+          これからの建設会社の生き残りに使える技術をサポートしています。
+建設ICT全般でサポートし、土木工事のアドバイザーとしてもお手伝いできる会社です。
+工事の基本測量からスタートし、３次元起工測量、３次元マシーンデータ作成、出来形管理のアウトソーシングによる実務から、社員の技術向上のお手伝いさせていただきます。
+
+        </p>
+      </section>
+
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field A</span>
+          <h3 class="text-xl font-black">UAV計測技術（UAV測量、地上レーザー測量など）</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+          <ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+ <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>UAV写真測量・UAVレーザー測量による3次元点群計測</li>
+  <li>既存舗装面の3次元計測</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  伐採前のUAVレーザー地形測量をはじめ、UAV写真測量による精密写真の作成を行っています。UAV写真精密計測により「舗装面クラック調査」にも対応可能です。<br>
+  道路維持工事で必要な現況舗装断面の3次元計測を行い、3次元設計データ作成に必要な平面図・縦断図・横断図・展開図等を作成します。
+</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1A_drone_web.jpg" alt="UAVレーザー地形測量" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1A_web.jpg" alt="UAV写真測量" class="w-full h-full object-cover" loading="lazy">
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field B</span>
+          <h3 class="text-xl font-black">マシーンコントロールデータの作成</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+          <ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+   <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>3次元設計データ作成（土工〔道路・造成・床掘〕、舗装工 ほか対応）</li>
+  <li>道路維持工事の設計データ作成</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  工事におけるICT活用の中でも、現場負担を最も軽減できる「建設機械のマシーンコントロール」に使用する3次元設計データの作成を行います。<br>
+  路線データがある道路土工をはじめ、ブロック床掘、補強土壁の床掘、さらには複合的な造成工事など、道路線形が無い現場にも対応した3次元データを作成します。<br><br>
+  道路維持工事については、3次元計測データからの3次元設計データ作成、TS出来形管理用データの作成まで対応可能です。<br>
+  それに付随して、路面切削機（施工履歴あり）用のデータ作成も行っています。
+
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1B_web.jpg" alt="出来形管理・電子成果作成" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1B_civ.webp" alt="施工管理アウトソーシング" class="w-full h-full object-contain" loading="lazy">
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="flex items-center gap-3 mb-6">
+          <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field C</span>
+          <h3 class="text-xl font-black">土工・構造物出来形管理のサポート</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+          <ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+   <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>TSを用いた出来形管理の技術指導</li>
+  <li>UAV写真測量による土工出来形のヒートマップ作成</li>
+  <li>地上型レーザースキャナーによる舗装面・構造物等のヒートマップ作成</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  出来形管理の一般化が進む「TSを用いた出来形管理」について、現場担当者への技術指導を行います。<br>
+  3次元出来形計測からヒートマップによる出来形管理まで、アウトソーシングにも対応し、現場負担を軽減します。
+
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1C_web.jpg" alt="3次元設計データ作成" class="w-full h-full object-contain" loading="lazy">
+          </div>
+          <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+            <img src="images/1C_site_mesh2.webp" alt="3次元計測・点群" class="w-full h-full object-cover" loading="lazy">
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Basic Information</p>
+            <ul class="space-y-3 text-sm">
+              <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">代表者</span><span class="font-bold text-slate-800 text-right">代表取締役 山中 浩</span></li>
+              <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">所在地</span><span class="font-bold text-slate-800 text-right">広島県三次市吉舎町安田1712-14</span></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Access & Links</p>
+            <ul class="space-y-3 text-sm">
+              <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">電話番号</span><span class="font-bold text-slate-800">0824-43-2242</span></li>
+              <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">Webサイト</span><a href="https://civil-hiro.com" target="_blank" class="font-bold text-amber-600 hover:underline">civil-hiro.com</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="p-8 text-center bg-slate-900">
+      <button onclick="toggleModal('modal-civil-hiro')" class="px-12 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Modal: CRAFTCOM株式会社 -->
+    <div id="modal-craftcom" class="fixed inset-0 z-[200] hidden bg-slate-900/90 backdrop-blur-sm overflow-y-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <button onclick="toggleModal('modal-craftcom')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 z-10">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="bg-slate-50 p-8 md:p-12 border-b border-slate-100">
+                <p class="text-amber-600 font-bold text-sm tracking-widest mb-2 uppercase">Company Profile</p>
+                <h2 class="text-3xl md:text-4xl font-black mb-4">ＣＲＡＦＴＣＯＭ株式会社</h2>
+                <p class="text-slate-600 text-lg leading-relaxed font-bold italic">「ICT施工のスペシャリストとして、現場を自走させる」</p>
+            </div>
+            <div class="p-8 md:p-12 space-y-16">
+                <section>
+                    <h3 class="text-xl font-black border-l-4 border-amber-600 pl-4 mb-6">事業概要</h3>
+                    <p class="text-slate-700 leading-loose">
+                        建設・土木業界に特化した現場実践型コンサルティング会社です。ICT・BIM/CIM内製化支援を軸に、3D測量・設計、現場マネジメント、技術者育成、書類作成やAI導入支援まで幅広く対応。現場と本社の両面から業務効率化と生産性向上を支援し、人手不足やDX推進といった業界課題の解決をワンストップで伴走します。
+                    </p>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field A</span>
+                        <h3 class="text-xl font-black">ICT施工・計測技術（地上レーザー、UAV、点群処理など）</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                       <ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+ <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>UAV写真測量</li>
+  <li>3D測量設計</li>
+  <li>出来形計測・管理</li>
+  <li>ICT施工支援</li>
+  <li>点群処理・解析（TLS／LiDAR 等）</li>
+  <li>現場のICT導入・内製化コンサルティング</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  中小建設企業向けにi-Construction内製化支援・ICT導入支援を実施しています。<br>
+  UAV等の測量データを活用した出来形管理や3D設計データ生成、現場実測データ処理までをワンストップでサポート。中国・四国・九州エリアを中心にICTサポート企業として活動しています。<br><br>
+  ※国土交通省中国地方整備局 ICTサポート企業 登録実績あり（i-Construction／BIM/CIM支援）
+</p>
+                    </p>
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+    <img src="images/3A_2.webp" class="w-full h-full object-cover" alt="技術者 実地レクチャー">
+  </div>
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+ <img src="images/3A_1.webp" class="w-full h-full object-contain" alt="ICT建機 現場導入">
+
+  </div>
+</div>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field B</span>
+                        <h3 class="text-xl font-black">BIM/CIM・3次元設計・モデリング</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                        <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>3D設計データ作成</li>
+  <li>統合モデル作成支援</li>
+  <li>BIM/CIMモデル構築</li>
+  <li>3次元設計・干渉チェック</li>
+  <li>3D点群と設計データの重畳・解析</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  ICT施工と連携した3Dモデル活用支援にも対応しています。
+</p>
+                    </p>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+    <img src="images/3B_1.webp" class="w-full h-full object-cover" alt="BIM CIM モデル">
+  </div>
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+    <img src="images/3B_2.webp" class="w-full h-full object-cover" alt="施工シミュレーション">
+  </div>
+</div>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field C</span>
+                        <h3 class="text-xl font-black">DX支援・i-Constructionアドバイザー・教育支援・AI活用支援</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                        <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>建設DX支援（ICT／BIM／CIM 内製化コンサルティング）</li>
+  <li>戦略支援</li>
+  <li>施工プロセス改善・ICT戦略立案</li>
+  <li>施工データ活用支援</li>
+  <li>教育・研修支援</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  中小建設企業のデジタルトランスフォーメーション推進を目的とした、包括的なサポートを提供しています。
+</p>
+                    </p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+    <img src="images/3c_1.webp" class="w-full h-full object-cover" alt="ICT施工セミナー">
+  </div>
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+    <img src="images/3c_2.webp" class="w-full h-full object-cover" alt="社内研修サポート">
+  </div>
+</div>
+                </section>
+                <section class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Basic Information</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">代表者</span><span class="font-bold text-slate-800 text-right">代表取締役 沖山 達哉</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">所在地</span><span class="font-bold text-slate-800 text-right">岡山県岡山市南区新保1152-11    </span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Access & Links</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">電話番号</span><span class="font-bold text-slate-800">086-206-3590</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">Webサイト</span><a href="https://craftcom.biz/company" target="_blank" class="font-bold text-amber-600 hover:underline">craftcom.co.jp</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="p-8 text-center bg-slate-900">
+                <button onclick="toggleModal('modal-craftcom')" class="px-12 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal: 株式会社C&Nネクスト -->
+    <div id="modal-cnx" class="fixed inset-0 z-[200] hidden bg-slate-900/90 backdrop-blur-sm overflow-y-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <button onclick="toggleModal('modal-cnx')" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 z-10">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="bg-slate-50 p-8 md:p-12 border-b border-slate-100">
+                <p class="text-amber-600 font-bold text-sm tracking-widest mb-2 uppercase">Company Profile</p>
+                <h2 class="text-3xl md:text-4xl font-black mb-4">株式会社C&Nネクスト</h2>
+                <p class="text-slate-600 text-lg leading-relaxed font-bold italic">「測量・調査のプロとして、建設DXの基盤を創る」</p>
+            </div>
+            <div class="p-8 md:p-12 space-y-16">
+                <section>
+                    <h3 class="text-xl font-black border-l-4 border-amber-600 pl-4 mb-6">事業概要</h3>
+                    <p class="text-slate-700 leading-loose">
+                       株式会社シー・アンド・エヌネクストは、建設ICT・DX分野に特化した建設×ITの専門企業です。UAV・地上レーザー・モバイルスキャンによる3次元計測から、3次元設計データ作成、出来形帳票・電子納品までをワンストップで提供します。人手不足や専任技術者不足、機材導入コストといった現場の課題に対し、アウトソーシングによる高品質成果物の提供で作業負担を軽減。国土交通省発注工事をはじめ、ICT土工・擁壁工・電線共同溝工など多数の実績を有し、「現場で使えるDX」を実践しています。
+                    </p>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field A</span>
+                        <h3 class="text-xl font-black">ICT施工・計測技術（地上レーザー、UAV、点群処理など）</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                      <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>UAV点群測量・TLS（地上レーザー）による3次元点群計測</li>
+  <li>モバイルスキャンによる出来形計測、機器レンタル</li>
+  <li>3次元設計データ作成（土工・舗装工・擁壁工・電線共同溝ほか対応）</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  TLS・UAV・モバイル端末を現場条件に応じて使い分け、測量・出来形計測作業の大幅な時間短縮と、高所作業等が不要になることで安全性向上を実現。<br>
+  ICT施工に不慣れな現場でも、計画書作成から3次元計測、帳票作成まで一括対応することで、現場負担を最小化します。<br>
+  鳥取県・国土交通省発注工事における建設ICT支援実績あり。
+
+</p>
+                    </p>
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-200">
+    <img src="images/2A_ywSYmVdf_web_1920.webp" class="w-full h-full object-cover" alt="高精度測量1" loading="lazy">
+  </div>
+  <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-200">
+    <img src="images/2A_D1NHyvEJ_web_1920.webp" class="w-full h-full object-contain" alt="高精度測量2" loading="lazy">
+  </div>
+</div>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field B</span>
+                        <h3 class="text-xl font-black">BIM/CIM・3次元設計・モデリング</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                     <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>BIM/CIM導入検討・実施計画支援</li>
+  <li>工事特性に応じたBIM/CIM活用提案（施工・検査・協議）</li>
+  <li>3次元モデル作成（道路・構造物・電線共同溝・法面 等）</li>
+  <li>施工ステップ・出来形・干渉確認用モデル整備</li>
+  <li>発注者説明資料・検査対応用データ作成</li>
+  <li>BIM/CIM成果品・電子納品までの一括対応</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  BIM/CIMモデルを「作るだけ」で終わらせず、導入検討から活用提案、納品・検査対応までを一貫して支援します。<br>
+  工事内容や発注者要領を踏まえ、施工計画・出来形管理・発注者協議など、実際の業務で使えるBIM/CIM活用方法を提案します。<br>
+  成果品整理や電子納品までワンストップで対応可能です。BIM/CIMに不慣れな現場でも、現場負担を増やさず確実に成果へつなげるサポートを強みとしています。
+</p>　
+
+                    </p>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-200">
+                          <img src="images/2B_web_1920.webp" class="w-full h-full object-cover" alt="海洋・河川調査と3次元解析2" loading="lazy">
+                        </div>
+                        <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-200">
+                           <img src="images/2B4D_web_1920.webp" class="w-full h-full object-cover" alt="海洋・河川調査と3次元解析2" loading="lazy">
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-amber-100 text-amber-600 font-bold px-3 py-1 rounded text-sm uppercase">Field C</span>
+                        <h3 class="text-xl font-black">DX支援・各種システム提案・BPO業務による現場負担軽減</h3>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                       <p class="text-slate-700 text-sm font-bold mb-2">
+  具体的な対応技術：
+</p>
+<ul class="list-disc pl-5 space-y-2 text-slate-700 text-sm leading-relaxed">
+  <li>建設DX関連システムの選定・導入提案</li>
+  <li>業務アウトソーシング（BPO）による現場支援</li>
+  <li>電子納品成果品作成</li>
+  <li>道路施設基本データ作成ほか各種台帳作成</li>
+  <li>図面作成、写真整理業務</li>
+</ul>
+
+<p class="text-slate-600 text-sm mt-4 leading-relaxed">
+  電子納品や道路施設基本データ作成、各種システム対応など、現場や技術者に負担が集中しやすい業務をBPO（業務アウトソーシング）として支援します。<br>
+  要領・様式・提出ルールを把握した専門スタッフが対応することで、手戻りや修正作業を抑え、現場担当者は本来の施工管理業務に専念可能です。<br>
+  システム導入についても「入れること」が目的にならないよう、実務に合ったツール選定と運用方法を提案し、確実に業務効率化につなげます。
+</p>                    </p>
+                                   </section>
+                <section class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Basic Information</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">代表者</span><span class="font-bold text-slate-800 text-right">代表取締役 小谷 泰樹</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">所在地</span><span class="font-bold text-slate-800 text-right">鳥取県米子市車尾南1-16-33</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Access & Links</p>
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">電話番号</span><span class="font-bold text-slate-800">0859-32-8626</span></li>
+                                <li class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">Webサイト</span><a href="https://c-and-n.co.jp" target="_blank" class="font-bold text-amber-600 hover:underline">cn-next.jp</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="p-8 text-center bg-slate-900">
+                <button onclick="toggleModal('modal-cnx')" class="px-12 py-3 rounded-full border border-white/30 text-white font-bold hover:bg-white hover:text-slate-900 transition-all">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animation scripts -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Mobile menu logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const iconOpen = document.getElementById('icon-open');
+        const iconClose = document.getElementById('icon-close');
+
+        menuToggle.addEventListener('click', () => {
+            const isHidden = mobileNav.classList.contains('hidden');
+            if (isHidden) {
+                mobileNav.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                mobileNav.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+        });
+
+        // Close mobile nav on link click
+        mobileNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
